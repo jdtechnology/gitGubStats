@@ -40,6 +40,33 @@ statsParser.async = {
   		xhttp.open("GET", "https://api.github.com/repos/" + username + "/" + name + "/stats/contributors", true);
   		xhttp.send();
   },
+  getSubscriptions: function(username) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if(this.readyState == 4 && this.status == 200) {
+        var subData = JSON.parse(this.responseText);
+        statsParser.async.parseSubscription(subData, username);
+      }
+    };
+    xhttp.open("GET", "https://api.github.com/users/" + username + "/subscriptions");
+    xhttp.send();
+  },
+  parseSubscription: function(subData, username) {
+    for(var i in subData) {
+      statsParser.async.getSubRepo(subData[i].full_name, username);
+    }
+  },
+  getSubRepo: function(repoFName, username) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if(this.readyState == 4 && this.status == 200) {
+        var repData = JSON.parse(this.responseText);
+        statsParser.countLines(repData, username);
+      }
+    };
+    xhttp.open("GET", "https://api.github.com/repos/" + repoFName + "/stats/contributors");
+    xhttp.send();
+  },
   countLines: function(rData, username) {
     for(var a in rData) {
       if(rData[a].author.login == username) {
