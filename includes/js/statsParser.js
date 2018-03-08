@@ -10,53 +10,31 @@ statsParser.global = {
 };
 //todo: collect code, and pass function as callback param
 statsParser.async = {
+  getData: function(apiUrl, callbackFunction) {
+    console.log(apiUrl);
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        var userData = JSON.parse(this.responseText);
+        console.log(userData);
+        callbackFunction(userData);
+      }
+    };
+    xhttp.open("GET", apiUrl, true);
+    xhttp.send();
+  },
   begin: function(username) {
     statsParser.global.username = username;
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				var userData = JSON.parse(this.responseText);
-        //process();
-        console.log(userData);
-        statsParser.callback.parseRepo(userData);
-			}
-		};
-		xhttp.open("GET", "https://api.github.com/users/" + statsParser.global.username + "/repos", true);
-		xhttp.send();
+    statsParser.async.getData("https://api.github.com/users/" + statsParser.global.username + "/repos", statsParser.callback.parseRepo)
   },
   getRepo: function(name) {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-  			if (this.readyState == 4 && this.status == 200) {
-  				var repoData = JSON.parse(this.responseText);
-          console.log(repoData);
-          statsParser.callback.countLines(repoData);
-  			}
-  		};
-  		xhttp.open("GET", "https://api.github.com/repos/" + statsParser.global.username + "/" + name + "/stats/contributors", true);
-  		xhttp.send();
+    statsParser.async.getData("https://api.github.com/repos/" + statsParser.global.username + "/" + name + "/stats/contributors", statsParser.callback.countLines)
   },
   getSubscriptions: function() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if(this.readyState == 4 && this.status == 200) {
-        var subData = JSON.parse(this.responseText);
-        statsParser.callback.parseSubscription(subData);
-      }
-    };
-    xhttp.open("GET", "https://api.github.com/users/" + statsParser.global.username + "/subscriptions");
-    xhttp.send();
+    statsParser.async.getData("https://api.github.com/users/" + statsParser.global.username + "/subscriptions", statsParser.callback.parseSubscription)
   },
   getSubRepo: function(repoFName) {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-      if(this.readyState == 4 && this.status == 200) {
-        var repData = JSON.parse(this.responseText);
-        statsParser.callback.countLines(repData);
-      }
-    };
-    xhttp.open("GET", "https://api.github.com/repos/" + repoFName + "/stats/contributors");
-    xhttp.send();
+    statsParser.async.getData("https://api.github.com/repos/" + repoFName + "/stats/contributors", statsParser.callback.countLines)
   },
 
 };
