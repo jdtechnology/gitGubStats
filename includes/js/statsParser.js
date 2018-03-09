@@ -9,7 +9,8 @@
   * and here
   * and here
   *
-  * @author Jack Fisher <https://github.com/jdtechnology>
+  * Author:
+  * Jack Fisher <https://github.com/jdtechnology>
   */
 (function () {
   window.StatsParser = window.StatsParser || {};
