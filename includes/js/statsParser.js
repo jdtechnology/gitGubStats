@@ -1,15 +1,27 @@
 "use strict";
+/**
+  * A simple class for (currently) finding the number of lines a "username"
+  * has added/deleted to github.com.
+  *
+  * Copyright 2018 (c) Jack Fisher
+  *
+  * Copyright notice to go here
+  * and here
+  * and here
+  *
+  * @author Jack Fisher <https://github.com/jdtechnology>
+  */
 (function () {
-  window.statsParser = window.statsParser || {};
+  window.StatsParser = window.StatsParser || {};
 }());
 
-statsParser.global = {
+StatsParser.global = {
   total_additions: 0,
   total_removals: 0,
   username: ""
 };
-//todo: collect code, and pass function as callback param
-statsParser.async = {
+
+StatsParser.async = {
   getData: function(apiUrl, callbackFunction) {
     console.log(apiUrl);
     var xhttp = new XMLHttpRequest();
@@ -24,38 +36,37 @@ statsParser.async = {
     xhttp.send();
   },
   begin: function(username) {
-    statsParser.global.username = username;
-    statsParser.async.getData("https://api.github.com/users/" + statsParser.global.username + "/repos", statsParser.callback.parseRepo)
+    StatsParser.global.username = username;
+    StatsParser.async.getData("https://api.github.com/users/" + StatsParser.global.username + "/repos", StatsParser.callback.parseRepo);
   },
   getRepo: function(name) {
-    statsParser.async.getData("https://api.github.com/repos/" + statsParser.global.username + "/" + name + "/stats/contributors", statsParser.callback.countLines)
+    StatsParser.async.getData("https://api.github.com/repos/" + StatsParser.global.username + "/" + name + "/stats/contributors", StatsParser.callback.countLines);
   },
   getSubscriptions: function() {
-    statsParser.async.getData("https://api.github.com/users/" + statsParser.global.username + "/subscriptions", statsParser.callback.parseSubscription)
+    StatsParser.async.getData("https://api.github.com/users/" + StatsParser.global.username + "/subscriptions", StatsParser.callback.parseSubscription);
   },
   getSubRepo: function(repoFName) {
-    statsParser.async.getData("https://api.github.com/repos/" + repoFName + "/stats/contributors", statsParser.callback.countLines)
+    StatsParser.async.getData("https://api.github.com/repos/" + repoFName + "/stats/contributors", StatsParser.callback.countLines);
   },
-
 };
-statsParser.callback = {
+StatsParser.callback = {
   parseRepo: function(repo) {
     for(var i in repo) {
       console.log(repo[i].owner.login);
-      statsParser.async.getRepo(repo[i].name, statsParser.global.username);
+      StatsParser.async.getRepo(repo[i].name, StatsParser.global.username);
     }
   },
   parseSubscription: function(subData) {
     for(var i in subData) {
-      statsParser.async.getSubRepo(subData[i].full_name, statsParser.global.username);
+      StatsParser.async.getSubRepo(subData[i].full_name, StatsParser.global.username);
     }
   },
   countLines: function(rData) {
     for(var a in rData) {
-      if(rData[a].author.login == statsParser.global.username) {
+      if(rData[a].author.login == StatsParser.global.username) {
         for(var i in rData[a].weeks) {
-          statsParser.global.total_additions += rData[a].weeks[i].a;
-          statsParser.global.total_removals += rData[a].weeks[i].d;
+          StatsParser.global.total_additions += rData[a].weeks[i].a;
+          StatsParser.global.total_removals += rData[a].weeks[i].d;
         }
       }
     }
@@ -66,8 +77,8 @@ statsParser.callback = {
 //Debugging purposes
 function getResult() {
   var uname = document.getElementById("uname").value;
-  statsParser.async.begin(uname);
+  StatsParser.async.begin(uname);
 }
 function showResult() {
-  document.getElementById("res0").innerHTML = statsParser.global.total_additions - statsParser.global.total_removals;
+  document.getElementById("res0").innerHTML = StatsParser.global.total_additions - StatsParser.global.total_removals;
 }
