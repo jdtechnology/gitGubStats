@@ -38,6 +38,8 @@ StatsParser.async = {
   },
   begin: function(username) {
     StatsParser.global.username = username;
+    StatsParser.global.total_additions = 0;
+    StatsParser.global.total_removals = 0;
     StatsParser.async.getData("https://api.github.com/users/" + StatsParser.global.username + "/repos", StatsParser.callback.parseRepo);
   },
   getRepo: function(name) {
