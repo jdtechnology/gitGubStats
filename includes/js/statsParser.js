@@ -16,6 +16,10 @@
   window.StatsParser = window.StatsParser || {};
 }());
 
+StatsParser.options = {
+    db: true //debug
+};
+
 StatsParser.global = {
   total_additions: 0,
   total_removals: 0,
@@ -29,7 +33,7 @@ StatsParser.async = {
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         var userData = JSON.parse(this.responseText);
-        console.log(userData);
+        if(StatsParser.options.db) console.log(userData);
         callbackFunction(userData);
       }
     };
@@ -55,7 +59,7 @@ StatsParser.async = {
 StatsParser.callback = {
   parseRepo: function(repo) {
     for(var i in repo) {
-      console.log(repo[i].owner.login);
+      if(StatsParser.options.db) console.log(repo[i].owner.login);
       StatsParser.async.getRepo(repo[i].name, StatsParser.global.username);
     }
   },
