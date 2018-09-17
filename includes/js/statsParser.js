@@ -14,7 +14,12 @@
   */
 (function () {
   window.StatsParser = window.StatsParser || {};
+  window.Logger = window.Logger || {};
 }());
+
+Logger.debug = function(message) {
+    if(StatsParser.options.db) console.log(message);
+};
 
 StatsParser.options = {
     db: true //debug
@@ -33,7 +38,7 @@ StatsParser.async = {
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         var userData = JSON.parse(this.responseText);
-        if(StatsParser.options.db) console.log(userData);
+        Logger.debug(userData);
         callbackFunction(userData);
       }
     };
@@ -59,7 +64,7 @@ StatsParser.async = {
 StatsParser.callback = {
   parseRepo: function(repo) {
     for(var i in repo) {
-      if(StatsParser.options.db) console.log(repo[i].owner.login);
+      Logger.debug(repo[i].owner.login);
       StatsParser.async.getRepo(repo[i].name, StatsParser.global.username);
     }
   },
