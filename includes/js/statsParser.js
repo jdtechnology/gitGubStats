@@ -21,6 +21,18 @@ Logger.debug = function(message) {
     if(StatsParser.options.db) console.log(message);
 };
 
+Logger.log = function(message) {
+    console.log(message);
+};
+
+Logger.warn = function(message) {
+    console.log("%c" + message, 'color: red; font-weight: bold');
+};
+
+Logger.info = function(message) {
+    console.log("%c" + message, 'color: green');
+};
+
 StatsParser.options = {
     db: true //debug
 };
