@@ -1,4 +1,6 @@
-"use strict";
+(function() {
+    "use strict";
+}());
 /**
   * A simple class for (currently) finding the number of lines a "username"
   * has added/deleted to github.com.
@@ -18,19 +20,19 @@
 }());
 
 Logger.debug = function(message) {
-    if(StatsParser.options.db) console.log(message);
+    if(StatsParser.options.db) console.log(message? message : "DEBUG: Something went wrong.");
 };
 
 Logger.log = function(message) {
-    console.log(message);
+    console.log(message? message : "LOG: Something went wrong.");
 };
 
 Logger.warn = function(message) {
-    console.log("%c" + message, 'color: red; font-weight: bold');
+    console.log(message? "%c" + message : "%cWARN: Something went wrong.", 'color: red; font-weight: bold');
 };
 
 Logger.info = function(message) {
-    console.log("%c" + message, 'color: green');
+    console.log(message? "%c" + message : "%cINFO: Something went wrong.", 'color: green');
 };
 
 StatsParser.options = {
